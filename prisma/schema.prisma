@@ -1,0 +1,79 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model user {
+  id              String    @id @default(uuid()) @db.Uuid()
+  name            String    @db.VarChar(255)
+  username        String    @unique
+  password        String    @db.VarChar(60)
+  registered_date DateTime  @default(now())
+  body_weight     Int?
+  body_height     Int?
+  journal         journal[]
+  watched         watched?  @relation(fields: [watchedId], references: [id])
+  watchedId       String?   @db.Uuid()
+  favorite        favorite? @relation(fields: [favoriteId], references: [id])
+  favoriteId      String?   @db.Uuid()
+}
+
+model journal {
+  id             String   @id @default(uuid()) @db.Uuid()
+  journal_note   String   @db.VarChar(255)
+  journal_rating Int
+  journal_weight Int
+  date_add       DateTime @default(now())
+
+  user   user?   @relation(fields: [userId], references: [id])
+  userId String? @db.Uuid()
+}
+
+model watched {
+  id         String    @id @default(uuid()) @db.Uuid()
+  is_watched Boolean
+  content    content[]
+  user       user[]
+}
+
+model favorite {
+  id          String    @id @default(uuid()) @db.Uuid()
+  is_favorite Boolean
+  content     content[]
+  user        user[]
+}
+
+model content {
+  id            Int       @id @default(autoincrement())
+  thumbnail_url String    @db.VarChar(255)
+  video_title   String    @db.VarChar(255)
+  video_url     String    @db.VarChar(255)
+  video_type    String    @db.VarChar(255)
+  body_part     String    @db.VarChar(255)
+  schedule      schedule? @relation(fields: [scheduleId], references: [id])
+  scheduleId    String?   @db.Uuid()
+  watched       watched?  @relation(fields: [watchedId], references: [id])
+  watchedId     String?   @db.Uuid()
+  favorite      favorite? @relation(fields: [favoriteId], references: [id])
+  favoriteId    String?   @db.Uuid()
+}
+
+model schedule {
+  id             String    @id @default(uuid()) @db.Uuid()
+  schedule_title String    @db.VarChar(255)
+  content        content[]
+  program        program?  @relation(fields: [programId], references: [id])
+  programId      String?   @db.Uuid()
+}
+
+model program {
+  id       String     @id @default(uuid()) @db.Uuid()
+  schedule schedule[]
+}
