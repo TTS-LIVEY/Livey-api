@@ -53,6 +53,15 @@ class ContentHandler {
                 return res.status(500).json({ message: `Internal server error` }).end();
             }
         });
+        this.deleteById = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const delContent = yield this.Repo.deleteContent(Number(req.params.id));
+                return res.status(200).json(delContent).end();
+            }
+            catch (error) {
+                return res.status(500).json({ message: `Internal server error` }).end();
+            }
+        });
     }
 }
 exports.default = ContentHandler;
