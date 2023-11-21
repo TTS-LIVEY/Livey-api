@@ -10,10 +10,7 @@ import {
   IContentRepository,
   Id,
 } from "../interfaces/content.interface";
-
-export interface AuthStatus extends ICreateContentDto {
-  user: { id: string };
-}
+import { adminID } from "../const";
 
 export default class ContentHandler implements IContentHandler {
   constructor(private Repo: IContentRepository) {}
@@ -23,6 +20,10 @@ export default class ContentHandler implements IContentHandler {
     ICreateContentDto
   > = async (req, res) => {
     try {
+      if (res.locals.user.id !== adminID) {
+        console.log(res.locals.user.id);
+        return res.status(501).json({ message: `Unauthorized access` }).end();
+      }
       const { video_url, video_type, body_part } = req.body;
       const { thumbnail_url, title } = await oembedUrl(video_url);
 
@@ -71,6 +72,10 @@ export default class ContentHandler implements IContentHandler {
     res
   ) => {
     try {
+      if (res.locals.user.id !== adminID) {
+        console.log(res.locals.user.id);
+        return res.status(501).json({ message: `Unauthorized access` }).end();
+      }
       const delContent = await this.Repo.deleteContent(Number(req.params.id));
       return res.status(200).json(delContent).end();
     } catch (error) {

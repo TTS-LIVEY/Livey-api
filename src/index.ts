@@ -11,6 +11,13 @@ import {
   IContentRepository,
 } from "./interfaces/content.interface";
 import { IUserHandler, IUserRepository } from "./interfaces/user.interface";
+import JWTMiddleware from "./middleware/jwt";
+import {
+  IJournalHandler,
+  IJournalRepository,
+} from "./interfaces/journal.interface";
+import JournalRepository from "./repositories/journal";
+import JournalHandler from "./handler/journal";
 
 const app = express();
 const PORT = 8085;
@@ -19,10 +26,14 @@ const userRepo: IUserRepository = new UserRepository(client);
 const userHandler: IUserHandler = new UserHandler(userRepo);
 const contentRepo: IContentRepository = new ContentRepository(client);
 const contentHandler: IContentHandler = new ContentHandler(contentRepo);
+const journalRepo: IJournalRepository = new JournalRepository(client);
+const journalHandler: IJournalHandler = new JournalHandler(journalRepo);
+const jwtMiddleware = new JWTMiddleware();
+
 app.use(express.json());
 
-app.get("/", (req, res) => {
-  console.log("Hello parn");
+app.get("/", jwtMiddleware.auth, (req, res) => {
+  console.log(res.locals);
   return res.status(200).send("Welcome to Livey").end();
 });
 //user register and login
@@ -34,10 +45,14 @@ userRouter.patch("/:username", userHandler.updateWeightDetail);
 
 const contentRouter = express.Router();
 app.use("/content", contentRouter);
-contentRouter.post("/", contentHandler.create);
+contentRouter.post("/", jwtMiddleware.auth, contentHandler.create);
 contentRouter.get("/", contentHandler.getAll);
 contentRouter.get("/:id", contentHandler.getById);
-contentRouter.delete("/:id", contentHandler.deleteById);
+contentRouter.delete("/:id", jwtMiddleware.auth, contentHandler.deleteById);
+
+const journalRouter = express.Router();
+app.use("/journal", journalRouter);
+journalRouter.post("/", jwtMiddleware.auth, journalHandler.create);
 
 app.listen(PORT, () => {
   console.log(`Livey-API is listening on port ${PORT}`);

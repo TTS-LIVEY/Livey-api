@@ -10,11 +10,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const oembed_1 = require("../utils/oembed");
+const const_1 = require("../const");
 class ContentHandler {
     constructor(Repo) {
         this.Repo = Repo;
         this.create = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
+                if (res.locals.user.id !== const_1.adminID) {
+                    console.log(res.locals.user.id);
+                    return res.status(501).json({ message: `Unauthorized access` }).end();
+                }
                 const { video_url, video_type, body_part } = req.body;
                 const { thumbnail_url, title } = yield (0, oembed_1.oembedUrl)(video_url);
                 const newContent = yield this.Repo.createContent(res.locals.id, {
@@ -55,6 +60,10 @@ class ContentHandler {
         });
         this.deleteById = (req, res) => __awaiter(this, void 0, void 0, function* () {
             try {
+                if (res.locals.user.id !== const_1.adminID) {
+                    console.log(res.locals.user.id);
+                    return res.status(501).json({ message: `Unauthorized access` }).end();
+                }
                 const delContent = yield this.Repo.deleteContent(Number(req.params.id));
                 return res.status(200).json(delContent).end();
             }
