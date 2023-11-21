@@ -33,4 +33,5 @@ export interface IContentHandler {
   create: RequestHandler<{}, IContentDto | IErrorDto, ICreateContentDto>;
   getAll: RequestHandler<{}, IContentAll[] | IErrorDto>;
   getById: RequestHandler<Id, IContentAll | IErrorDto>;
+  deleteById: RequestHandler<Id, IContentAll | IErrorDto>;
 }
