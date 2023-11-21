@@ -32,6 +32,7 @@ app.use("/content", contentRouter);
 contentRouter.post("/", contentHandler.create);
 contentRouter.get("/", contentHandler.getAll);
 contentRouter.get("/:id", contentHandler.getById);
+contentRouter.delete("/:id", contentHandler.deleteById);
 app.listen(PORT, () => {
     console.log(`Livey-API is listening on port ${PORT}`);
 });

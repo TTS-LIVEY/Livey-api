@@ -66,4 +66,15 @@ export default class ContentHandler implements IContentHandler {
       return res.status(500).json({ message: `Internal server error` }).end();
     }
   };
+  public deleteById: RequestHandler<Id, IContentAll | IErrorDto> = async (
+    req,
+    res
+  ) => {
+    try {
+      const delContent = await this.Repo.deleteContent(Number(req.params.id));
+      return res.status(200).json(delContent).end();
+    } catch (error) {
+      return res.status(500).json({ message: `Internal server error` }).end();
+    }
+  };
 }
