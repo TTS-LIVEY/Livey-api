@@ -4,8 +4,9 @@ import {
   IJournalHandler,
   IJournalRepository,
 } from "../interfaces/journal.interface";
-import { ICreateJornalDto, IJournalDto } from "../dto/journal.dto";
+
 import { IErrorDto } from "../dto/error.dto";
+import { ICreateJornalDto, IJournalDto } from "../dto/journal.dto";
 
 export default class JournalHandler implements IJournalHandler {
   constructor(private Repo: IJournalRepository) {}
