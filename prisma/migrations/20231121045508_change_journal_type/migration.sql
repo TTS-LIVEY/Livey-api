@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "journal" ALTER COLUMN "journal_rating" DROP NOT NULL,
+ALTER COLUMN "journal_weight" DROP NOT NULL,
+ALTER COLUMN "DOB" DROP NOT NULL;
