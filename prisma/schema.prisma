@@ -26,14 +26,14 @@ model user {
 }
 
 model journal {
-  id             String   @id @default(uuid()) @db.Uuid()
-  journal_note   String   @db.VarChar(255)
-  journal_rating Int
-  journal_weight Int
-  date_add       DateTime @default(now())
-
-  user   user?   @relation(fields: [userId], references: [id])
-  userId String? @db.Uuid()
+  id             String    @id @default(uuid()) @db.Uuid()
+  journal_note   String    @db.VarChar(255)
+  journal_rating Int?
+  journal_weight Int?
+  date_add       DateTime  @default(now())
+  DOB            DateTime?
+  user           user?     @relation(fields: [userId], references: [id])
+  userId         String?   @db.Uuid()
 }
 
 model watched {
