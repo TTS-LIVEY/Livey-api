@@ -14,15 +14,41 @@ class JournalHandler {
         this.Repo = Repo;
         this.create = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { journal_rating, journal_note, journal_weight } = req.body;
-            const { date_add } = yield this.Repo.createJournal(res.locals.id, {
+            const { date_add, journal_note: db_journal_note } = yield this.Repo.createJournal(res.locals.user.id, {
                 journal_rating,
                 journal_note,
                 journal_weight,
             });
             console.log(journal_rating);
+            console.log(res.locals.user.id);
             return res
                 .status(200)
                 .json({ journal_rating, journal_note, journal_weight, date_add })
+                .end();
+        });
+        this.getAll = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                // const ownerId = res.locals.user.id;
+                const journalUser = yield this.Repo.getJournal();
+                return res
+                    .status(200)
+                    .json(Object.assign({}, journalUser))
+                    .end();
+            }
+            catch (error) {
+                return res.status(500).json({ message: `Unauthorized access` }).end();
+            }
+        });
+        this.update = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            const { journal_note, journal_rating, journal_weight } = req.body;
+            const { updated_at } = yield this.Repo.updateJournal(req.params.id, {
+                journal_note,
+                journal_rating,
+                journal_weight,
+            });
+            return res
+                .status(200)
+                .json({ journal_note, journal_rating, journal_weight, updated_at })
                 .end();
         });
     }

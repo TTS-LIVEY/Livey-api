@@ -1,4 +1,4 @@
-import { content, user } from "@prisma/client";
+import { Content, User } from "@prisma/client";
 import {
   ICreateuserDto,
   ILoginDto,
@@ -12,6 +12,7 @@ import { IErrorDto } from "../dto/error.dto";
 export interface Username {
   username: string;
 }
+
 export interface UpdatedUserDetailWithoutPassword {
   id: string;
   name: string;
@@ -19,13 +20,11 @@ export interface UpdatedUserDetailWithoutPassword {
   registered_date: Date;
   body_weight: number | null;
   body_height: number | null;
-  watchedId: string | null;
-  favoriteId: string | null;
 }
 
 export interface IUserRepository {
   createuser(user: ICreateuserDto): Promise<IUserDto>;
-  findByUsername(username: string): Promise<user>;
+  findByUsername(username: string): Promise<User>;
   updateWeight(
     username: string,
     userDetail: IUpdateWeightDto

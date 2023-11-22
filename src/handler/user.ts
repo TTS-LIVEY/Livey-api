@@ -16,7 +16,7 @@ import {
   UpdatedUserDetailWithoutPassword,
   Username,
 } from "../interfaces/user.interface";
-import { user } from "@prisma/client";
+import { User } from "@prisma/client";
 
 export default class UserHandler implements IUserHandler {
   constructor(private Repo: IUserRepository) {}
