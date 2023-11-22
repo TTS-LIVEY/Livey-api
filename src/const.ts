@@ -4,5 +4,4 @@ if (!ENV_JWI_SECRET)
 
 export const JWT_SECRET = ENV_JWI_SECRET;
 
-export const adminUser = "Aster123";
-export const adminPassword = "123456";
+export const adminID = "0ed1958c-59cb-49ec-9de9-2b8e404ee258";
