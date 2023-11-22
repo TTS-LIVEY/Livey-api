@@ -18,10 +18,12 @@ import {
 } from "./interfaces/journal.interface";
 import JournalRepository from "./repositories/journal";
 import JournalHandler from "./handler/journal";
+import cors from "cors";
 
 const app = express();
 const PORT = 8085;
 const client = new PrismaClient();
+
 const userRepo: IUserRepository = new UserRepository(client);
 const userHandler: IUserHandler = new UserHandler(userRepo);
 const contentRepo: IContentRepository = new ContentRepository(client);
@@ -31,6 +33,7 @@ const journalHandler: IJournalHandler = new JournalHandler(journalRepo);
 const jwtMiddleware = new JWTMiddleware();
 
 app.use(express.json());
+app.use(cors());
 
 app.get("/", jwtMiddleware.auth, (req, res) => {
   console.log(res.locals);
@@ -53,6 +56,8 @@ contentRouter.delete("/:id", jwtMiddleware.auth, contentHandler.deleteById);
 const journalRouter = express.Router();
 app.use("/journal", journalRouter);
 journalRouter.post("/", jwtMiddleware.auth, journalHandler.create);
+journalRouter.get("/", journalHandler.getAll);
+journalRouter.patch("/:id", jwtMiddleware.auth, journalHandler.update);
 
 app.listen(PORT, () => {
   console.log(`Livey-API is listening on port ${PORT}`);

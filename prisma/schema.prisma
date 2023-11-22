@@ -30,6 +30,7 @@ model journal {
   journal_note   String    @db.VarChar(255)
   journal_rating Int?
   journal_weight Int?
+  updated_at     DateTime  @default(now())
   date_add       DateTime  @default(now())
   DOB            DateTime?
   user           user?     @relation(fields: [userId], references: [id])

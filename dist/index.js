@@ -12,6 +12,7 @@ const content_2 = __importDefault(require("./handler/content"));
 const jwt_1 = __importDefault(require("./middleware/jwt"));
 const journal_1 = __importDefault(require("./repositories/journal"));
 const journal_2 = __importDefault(require("./handler/journal"));
+const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 const PORT = 8085;
 const client = new client_1.PrismaClient();
@@ -23,6 +24,7 @@ const journalRepo = new journal_1.default(client);
 const journalHandler = new journal_2.default(journalRepo);
 const jwtMiddleware = new jwt_1.default();
 app.use(express_1.default.json());
+app.use((0, cors_1.default)());
 app.get("/", jwtMiddleware.auth, (req, res) => {
     console.log(res.locals);
     return res.status(200).send("Welcome to Livey").end();
@@ -42,6 +44,8 @@ contentRouter.delete("/:id", jwtMiddleware.auth, contentHandler.deleteById);
 const journalRouter = express_1.default.Router();
 app.use("/journal", journalRouter);
 journalRouter.post("/", jwtMiddleware.auth, journalHandler.create);
+journalRouter.get("/", journalHandler.getAll);
+journalRouter.patch("/:id", jwtMiddleware.auth, journalHandler.update);
 app.listen(PORT, () => {
     console.log(`Livey-API is listening on port ${PORT}`);
 });
