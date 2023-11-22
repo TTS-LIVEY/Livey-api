@@ -1,4 +1,4 @@
-import { PrismaClient, journal } from "@prisma/client";
+import { PrismaClient, Journal } from "@prisma/client";
 import {
   ICreateJournal,
   IJournal,
@@ -11,11 +11,11 @@ export default class JournalRepository implements IJournalRepository {
   public async createJournal(
     id: string,
     journalDetail: ICreateJournal
-  ): Promise<journal> {
+  ): Promise<Journal> {
     return await this.prisma.journal.create({
       data: {
         ...journalDetail,
-        user: { connect: { id: id } },
+        User: { connect: { id: id } },
       },
     });
   }
@@ -25,9 +25,9 @@ export default class JournalRepository implements IJournalRepository {
   public async updateJournal(
     id: string,
     journalDetail: IUpdateJournalDto
-  ): Promise<journal> {
+  ): Promise<Journal> {
     return await this.prisma.journal.update({
-      where: { id },
+      where: { journal_id: id },
       data: journalDetail,
     });
   }

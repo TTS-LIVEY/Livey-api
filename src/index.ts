@@ -19,6 +19,12 @@ import {
 import JournalRepository from "./repositories/journal";
 import JournalHandler from "./handler/journal";
 import cors from "cors";
+import WatchedHandler from "./handler/watched";
+import {
+  IWatchedHandler,
+  IWatchedRepository,
+} from "./interfaces/watched.interface";
+import WatchedRepository from "./repositories/watched";
 
 const app = express();
 const PORT = 8085;
@@ -30,6 +36,8 @@ const contentRepo: IContentRepository = new ContentRepository(client);
 const contentHandler: IContentHandler = new ContentHandler(contentRepo);
 const journalRepo: IJournalRepository = new JournalRepository(client);
 const journalHandler: IJournalHandler = new JournalHandler(journalRepo);
+const historyRepo: IWatchedRepository = new WatchedRepository(client);
+const historyHandler: IWatchedHandler = new WatchedHandler(historyRepo);
 const jwtMiddleware = new JWTMiddleware();
 
 app.use(express.json());
@@ -58,6 +66,10 @@ app.use("/journal", journalRouter);
 journalRouter.post("/", jwtMiddleware.auth, journalHandler.create);
 journalRouter.get("/", journalHandler.getAll);
 journalRouter.patch("/:id", jwtMiddleware.auth, journalHandler.update);
+
+const historyRouter = express.Router();
+app.use("/history", historyRouter);
+historyRouter.post("/", jwtMiddleware.auth, historyHandler.create);
 
 app.listen(PORT, () => {
   console.log(`Livey-API is listening on port ${PORT}`);

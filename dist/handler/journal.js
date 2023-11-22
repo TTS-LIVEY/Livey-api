@@ -14,7 +14,7 @@ class JournalHandler {
         this.Repo = Repo;
         this.create = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { journal_rating, journal_note, journal_weight } = req.body;
-            const { date_add } = yield this.Repo.createJournal(res.locals.user.id, {
+            const { date_add, journal_note: db_journal_note } = yield this.Repo.createJournal(res.locals.user.id, {
                 journal_rating,
                 journal_note,
                 journal_weight,

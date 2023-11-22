@@ -21,11 +21,12 @@ export default class JournalHandler implements IJournalHandler {
   public create: RequestHandler<{}, IJournalDto | IErrorDto, ICreateJornalDto> =
     async (req, res) => {
       const { journal_rating, journal_note, journal_weight } = req.body;
-      const { date_add } = await this.Repo.createJournal(res.locals.user.id, {
-        journal_rating,
-        journal_note,
-        journal_weight,
-      });
+      const { date_add, journal_note: db_journal_note } =
+        await this.Repo.createJournal(res.locals.user.id, {
+          journal_rating,
+          journal_note,
+          journal_weight,
+        });
       console.log(journal_rating);
       console.log(res.locals.user.id);
       return res

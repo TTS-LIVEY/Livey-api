@@ -1,4 +1,4 @@
-import { journal } from "@prisma/client";
+import { Journal } from "@prisma/client";
 import { RequestHandler } from "express";
 import {
   ICreateJornalDto,
@@ -17,7 +17,7 @@ export interface ICreateJournal {
   journal_note: string;
   journal_weight: number;
 }
-export interface IJournal extends journal {}
+export interface IJournal extends Journal {}
 export interface IUpdateJournal {
   journal_note: string;
   journal_weight: number;
@@ -26,9 +26,9 @@ export interface IUpdateJournal {
 }
 
 export interface IJournalRepository {
-  createJournal(id: string, journalDetail: ICreateJournal): Promise<journal>;
+  createJournal(id: string, journalDetail: ICreateJournal): Promise<Journal>;
   getJournal(): Promise<IJournal[]>;
-  updateJournal(id: string, journalDetail: IUpdateJournalDto): Promise<journal>;
+  updateJournal(id: string, journalDetail: IUpdateJournalDto): Promise<Journal>;
 }
 
 export interface IJournalHandler {

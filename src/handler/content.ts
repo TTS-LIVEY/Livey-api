@@ -24,7 +24,13 @@ export default class ContentHandler implements IContentHandler {
         console.log(res.locals.user.id);
         return res.status(501).json({ message: `Unauthorized access` }).end();
       }
-      const { video_url, video_type, body_part } = req.body;
+      const {
+        video_url,
+        video_type,
+        body_part,
+        program_title,
+        schedule_title,
+      } = req.body;
       const { thumbnail_url, title } = await oembedUrl(video_url);
 
       const newContent = await this.Repo.createContent(res.locals.id, {
@@ -32,6 +38,8 @@ export default class ContentHandler implements IContentHandler {
         video_type,
         thumbnail_url,
         body_part,
+        program_title,
+        schedule_title,
         video_title: title,
       });
 
@@ -40,6 +48,7 @@ export default class ContentHandler implements IContentHandler {
         .json({ ...newContent })
         .end();
     } catch (err) {
+      console.log(err);
       return res.status(500).json({ message: `Internal server error` }).end();
     }
   };

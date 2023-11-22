@@ -20,13 +20,15 @@ class ContentHandler {
                     console.log(res.locals.user.id);
                     return res.status(501).json({ message: `Unauthorized access` }).end();
                 }
-                const { video_url, video_type, body_part } = req.body;
+                const { video_url, video_type, body_part, program_title, schedule_title, } = req.body;
                 const { thumbnail_url, title } = yield (0, oembed_1.oembedUrl)(video_url);
                 const newContent = yield this.Repo.createContent(res.locals.id, {
                     video_url,
                     video_type,
                     thumbnail_url,
                     body_part,
+                    program_title,
+                    schedule_title,
                     video_title: title,
                 });
                 return res
@@ -35,6 +37,7 @@ class ContentHandler {
                     .end();
             }
             catch (err) {
+                console.log(err);
                 return res.status(500).json({ message: `Internal server error` }).end();
             }
         });

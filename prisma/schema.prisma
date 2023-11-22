@@ -10,7 +10,7 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model user {
+model User {
   id              String    @id @default(uuid()) @db.Uuid()
   name            String    @db.VarChar(255)
   username        String    @unique
@@ -18,63 +18,48 @@ model user {
   registered_date DateTime  @default(now())
   body_weight     Int?
   body_height     Int?
-  journal         journal[]
-  watched         watched?  @relation(fields: [watchedId], references: [id])
-  watchedId       String?   @db.Uuid()
-  favorite        favorite? @relation(fields: [favoriteId], references: [id])
-  favoriteId      String?   @db.Uuid()
+  Journal         Journal[]
+  History         History[]
 }
 
-model journal {
-  id             String    @id @default(uuid()) @db.Uuid()
-  journal_note   String    @db.VarChar(255)
+model Journal {
+  journal_id     String   @id @default(uuid()) @db.Uuid()
+  journal_note   String?  @db.VarChar(255)
   journal_rating Int?
   journal_weight Int?
-  updated_at     DateTime  @default(now())
-  date_add       DateTime  @default(now())
-  DOB            DateTime?
-  user           user?     @relation(fields: [userId], references: [id])
-  userId         String?   @db.Uuid()
+  updated_at     DateTime @default(now())
+  date_add       DateTime @default(now())
+  User           User     @relation(fields: [userId], references: [id])
+  userId         String   @db.Uuid()
 }
 
-model watched {
-  id         String    @id @default(uuid()) @db.Uuid()
-  is_watched Boolean
-  content    content[]
-  user       user[]
+model History {
+  history_id  String  @id @default(uuid()) @db.Uuid()
+  is_complete Boolean @default(false)
+  is_favorite Boolean @default(false)
+  Content     Content @relation(fields: [contentId], references: [content_id])
+  contentId   Int
+  User        User    @relation(fields: [userId], references: [id])
+  userId      String  @db.Uuid()
 }
 
-model favorite {
-  id          String    @id @default(uuid()) @db.Uuid()
-  is_favorite Boolean
-  content     content[]
-  user        user[]
+model Program {
+  program_title  String
+  schedule_title String
+  Content        Content[]
+
+  @@id([program_title, schedule_title])
 }
 
-model content {
-  id            Int       @id @default(autoincrement())
-  thumbnail_url String    @db.VarChar(255)
-  video_title   String    @db.VarChar(255)
-  video_url     String    @db.VarChar(255)
-  video_type    String    @db.VarChar(255)
-  body_part     String    @db.VarChar(255)
-  schedule      schedule? @relation(fields: [scheduleId], references: [id])
-  scheduleId    String?   @db.Uuid()
-  watched       watched?  @relation(fields: [watchedId], references: [id])
-  watchedId     String?   @db.Uuid()
-  favorite      favorite? @relation(fields: [favoriteId], references: [id])
-  favoriteId    String?   @db.Uuid()
-}
-
-model schedule {
-  id             String    @id @default(uuid()) @db.Uuid()
-  schedule_title String    @db.VarChar(255)
-  content        content[]
-  program        program?  @relation(fields: [programId], references: [id])
-  programId      String?   @db.Uuid()
-}
-
-model program {
-  id       String     @id @default(uuid()) @db.Uuid()
-  schedule schedule[]
+model Content {
+  content_id     Int       @id @default(autoincrement())
+  thumbnail_url  String    @db.VarChar(255)
+  video_title    String    @db.VarChar(255)
+  video_url      String    @db.VarChar(255)
+  video_type     String    @db.VarChar(255)
+  body_part      String    @db.VarChar(255)
+  program_title  String
+  schedule_title String
+  History        History[]
+  Program        Program   @relation(fields: [program_title, schedule_title], references: [program_title, schedule_title])
 }

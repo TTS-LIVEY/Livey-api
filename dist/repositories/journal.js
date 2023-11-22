@@ -16,7 +16,7 @@ class JournalRepository {
     createJournal(id, journalDetail) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.prisma.journal.create({
-                data: Object.assign(Object.assign({}, journalDetail), { user: { connect: { id: id } } }),
+                data: Object.assign(Object.assign({}, journalDetail), { User: { connect: { id: id } } }),
             });
         });
     }
@@ -28,7 +28,7 @@ class JournalRepository {
     updateJournal(id, journalDetail) {
         return __awaiter(this, void 0, void 0, function* () {
             return yield this.prisma.journal.update({
-                where: { id },
+                where: { journal_id: id },
                 data: journalDetail,
             });
         });
