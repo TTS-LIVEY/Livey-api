@@ -25,6 +25,12 @@ import {
   IWatchedRepository,
 } from "./interfaces/watched.interface";
 import WatchedRepository from "./repositories/watched";
+import {
+  IProgramHandler,
+  IProgramRepository,
+} from "./interfaces/program.interface";
+import ProgramRepository from "./repositories/progarm";
+import ProgramHandler from "./handler/program";
 
 const app = express();
 const PORT = 8085;
@@ -38,6 +44,8 @@ const journalRepo: IJournalRepository = new JournalRepository(client);
 const journalHandler: IJournalHandler = new JournalHandler(journalRepo);
 const historyRepo: IWatchedRepository = new WatchedRepository(client);
 const historyHandler: IWatchedHandler = new WatchedHandler(historyRepo);
+const programRepo: IProgramRepository = new ProgramRepository(client);
+const programHandler: IProgramHandler = new ProgramHandler(programRepo);
 const jwtMiddleware = new JWTMiddleware();
 
 app.use(express.json());
@@ -70,6 +78,11 @@ journalRouter.patch("/:id", jwtMiddleware.auth, journalHandler.update);
 const historyRouter = express.Router();
 app.use("/history", historyRouter);
 historyRouter.post("/", jwtMiddleware.auth, historyHandler.create);
+historyRouter.get("/:id", jwtMiddleware.auth, historyHandler.get);
+
+const programRouter = express.Router();
+app.use("/program", programRouter);
+programRouter.post("/", jwtMiddleware.auth, programHandler.createProgram);
 
 app.listen(PORT, () => {
   console.log(`Livey-API is listening on port ${PORT}`);

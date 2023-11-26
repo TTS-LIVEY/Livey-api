@@ -20,6 +20,7 @@ model User {
   body_height     Int?
   Journal         Journal[]
   History         History[]
+  Program         Program[]
 }
 
 model Journal {
@@ -47,6 +48,8 @@ model Program {
   program_title  String
   schedule_title String
   Content        Content[]
+  User           User?     @relation(fields: [userId], references: [id])
+  userId         String?   @db.Uuid()
 
   @@id([program_title, schedule_title])
 }

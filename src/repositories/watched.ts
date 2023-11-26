@@ -19,4 +19,26 @@ export default class WatchedRepository implements IWatchedRepository {
       },
     });
   }
+  public async getHistory(id: string): Promise<History[]> {
+    const userHistory = await this.prisma.history.findMany({
+      where: { userId: id },
+      include: {
+        User: {
+          select: {
+            id: true,
+            username: true,
+          },
+        },
+        Content: {
+          select: {
+            content_id: true,
+          },
+        },
+      },
+    });
+    if (userHistory === null) {
+      throw new Error(`user history not found`);
+    }
+    return userHistory;
+  }
 }
