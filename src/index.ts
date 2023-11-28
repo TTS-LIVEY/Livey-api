@@ -58,6 +58,7 @@ app.get("/", jwtMiddleware.auth, (req, res) => {
 //user register and login
 const userRouter = express.Router();
 app.use("/user", userRouter);
+userRouter.get("/me", jwtMiddleware.auth, userHandler.checkUser);
 userRouter.post("/", userHandler.registration);
 userRouter.post("/login", userHandler.login);
 userRouter.patch("/:username", userHandler.updateWeightDetail);
@@ -78,7 +79,17 @@ journalRouter.patch("/:id", jwtMiddleware.auth, journalHandler.update);
 const historyRouter = express.Router();
 app.use("/history", historyRouter);
 historyRouter.post("/", jwtMiddleware.auth, historyHandler.create);
-historyRouter.get("/:id", jwtMiddleware.auth, historyHandler.get);
+historyRouter.get("/me", jwtMiddleware.auth, historyHandler.get);
+historyRouter.patch(
+  "/complete/:historyid",
+  jwtMiddleware.auth,
+  historyHandler.updateComp
+);
+historyRouter.patch(
+  "/fav/:historyid",
+  jwtMiddleware.auth,
+  historyHandler.updateFav
+);
 
 const programRouter = express.Router();
 app.use("/program", programRouter);

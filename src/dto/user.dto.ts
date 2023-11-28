@@ -21,3 +21,9 @@ export interface ILoginDto {
 export interface IUpdateWeightDto {
   body_weight: number;
 }
+
+export interface IUserDetailDto {
+  id: string;
+  name: string;
+  username: string;
+}

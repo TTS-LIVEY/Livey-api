@@ -64,5 +64,19 @@ class UserRepository {
             });
         });
     }
+    findById(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.prisma.user.findUniqueOrThrow({
+                where: {
+                    id: userId,
+                },
+                select: {
+                    id: true,
+                    username: true,
+                    name: true,
+                },
+            });
+        });
+    }
 }
 exports.default = UserRepository;
