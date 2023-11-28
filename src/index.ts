@@ -33,7 +33,7 @@ import ProgramRepository from "./repositories/progarm";
 import ProgramHandler from "./handler/program";
 
 const app = express();
-const PORT = 8085;
+const PORT = Number(process.env.PORT || 8888);
 const client = new PrismaClient();
 
 const userRepo: IUserRepository = new UserRepository(client);
