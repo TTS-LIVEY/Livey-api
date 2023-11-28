@@ -7,6 +7,7 @@ import {
   IUserDto,
 } from "../dto/user.dto";
 import {
+  IUserAll,
   IUserRepository,
   UpdatedUserDetailWithoutPassword,
   UserDetail,
@@ -28,6 +29,10 @@ export default class UserRepository implements IUserRepository {
       select: SELECT,
     });
     return createdUser;
+  }
+  public async getAll(): Promise<IUserAll[]> {
+    const allUser = await this.prisma.user.findMany({});
+    return allUser;
   }
   public async findByUsername(username: string): Promise<User> {
     const findUsernameSuccess = await this.prisma.user.findUniqueOrThrow({
