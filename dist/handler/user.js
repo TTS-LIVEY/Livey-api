@@ -63,6 +63,15 @@ class UserHandler {
             console.log(newWeight);
             return res.status(200).json(newWeight).end();
         });
+        this.checkUser = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const idUser = yield this.Repo.findById(res.locals.user.id);
+                return res.status(200).json(idUser).end();
+            }
+            catch (error) {
+                return res.status(501).json({ message: `Unauthorized user` }).end();
+            }
+        });
     }
 }
 exports.default = UserHandler;

@@ -9,6 +9,7 @@ import {
 import {
   IUserRepository,
   UpdatedUserDetailWithoutPassword,
+  UserDetail,
 } from "../interfaces/user.interface";
 
 const SELECT = {
@@ -59,6 +60,18 @@ export default class UserRepository implements IUserRepository {
       },
       where: {
         username,
+      },
+    });
+  }
+  public async findById(userId: string): Promise<UserDetail> {
+    return await this.prisma.user.findUniqueOrThrow({
+      where: {
+        id: userId,
+      },
+      select: {
+        id: true,
+        username: true,
+        name: true,
       },
     });
   }
