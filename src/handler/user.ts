@@ -12,6 +12,7 @@ import { ICredentialDto } from "../dto/auth.dto";
 import { sign } from "jsonwebtoken";
 import { JWT_SECRET } from "../const";
 import {
+  IUserAll,
   IUserHandler,
   IUserRepository,
   UpdatedUserDetailWithoutPassword,
@@ -103,6 +104,17 @@ export default class UserHandler implements IUserHandler {
       return res.status(200).json(idUser).end();
     } catch (error) {
       return res.status(501).json({ message: `Unauthorized user` }).end();
+    }
+  };
+  public getAllUser: RequestHandler<{}, IUserAll[] | IErrorDto> = async (
+    req,
+    res
+  ) => {
+    try {
+      const userAll = await this.Repo.getAll();
+      return res.status(200).json(userAll).end();
+    } catch (error) {
+      return res.status(404).json({ message: `content not found` }).end();
     }
   };
 }

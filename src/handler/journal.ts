@@ -41,10 +41,7 @@ export default class JournalHandler implements IJournalHandler {
     try {
       // const ownerId = res.locals.user.id;
       const journalUser = await this.Repo.getJournal();
-      return res
-        .status(200)
-        .json({ ...journalUser })
-        .end();
+      return res.status(200).json(journalUser).end();
     } catch (error) {
       return res.status(500).json({ message: `Unauthorized access` }).end();
     }

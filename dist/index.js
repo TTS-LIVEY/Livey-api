@@ -41,6 +41,7 @@ app.get("/", jwtMiddleware.auth, (req, res) => {
 const userRouter = express_1.default.Router();
 app.use("/user", userRouter);
 userRouter.get("/me", jwtMiddleware.auth, userHandler.checkUser);
+userRouter.get("/", userHandler.getAllUser);
 userRouter.post("/", userHandler.registration);
 userRouter.post("/login", userHandler.login);
 userRouter.patch("/:username", userHandler.updateWeightDetail);

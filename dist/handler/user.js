@@ -72,6 +72,15 @@ class UserHandler {
                 return res.status(501).json({ message: `Unauthorized user` }).end();
             }
         });
+        this.getAllUser = (req, res) => __awaiter(this, void 0, void 0, function* () {
+            try {
+                const userAll = yield this.Repo.getAll();
+                return res.status(200).json(userAll).end();
+            }
+            catch (error) {
+                return res.status(404).json({ message: `content not found` }).end();
+            }
+        });
     }
 }
 exports.default = UserHandler;
