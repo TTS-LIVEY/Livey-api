@@ -36,20 +36,8 @@ export interface IWatchedRepository {
 }
 
 export interface IWatchedHandler {
-  create: RequestHandler<
-    histId,
-    IWatchedDto | IErrorDto,
-    IPostWatchedDto,
-    undefined,
-    AuthStatus
-  >;
-  get: RequestHandler<
-    histId,
-    IWatchHistory[] | IErrorDto,
-    undefined,
-    undefined,
-    AuthStatus
-  >;
+  create: RequestHandler<histId, IWatchedDto | IErrorDto, IPostWatchedDto>;
+  get: RequestHandler<histId, IWatchHistory[] | IErrorDto>;
   updateComp: RequestHandler<
     HistID,
     INewComplete | IErrorDto,

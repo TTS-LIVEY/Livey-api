@@ -79,8 +79,8 @@ journalRouter.patch("/:id", jwtMiddleware.auth, journalHandler.update);
 
 const historyRouter = express.Router();
 app.use("/history", historyRouter);
-historyRouter.post("/", jwtMiddleware.auth, historyHandler.create);
-historyRouter.get("/me", jwtMiddleware.auth, historyHandler.get);
+historyRouter.post("/:id", jwtMiddleware.auth, historyHandler.create);
+historyRouter.get("/:id", jwtMiddleware.auth, historyHandler.get);
 historyRouter.patch(
   "/complete/:historyid",
   jwtMiddleware.auth,
