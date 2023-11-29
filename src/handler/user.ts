@@ -3,6 +3,7 @@ import {
   ICreateuserDto,
   ILoginDto,
   IUpdateWeightDto,
+  IUserDetailDto,
   IUserDto,
 } from "../dto/user.dto";
 import { IErrorDto } from "../dto/error.dto";
@@ -11,12 +12,14 @@ import { ICredentialDto } from "../dto/auth.dto";
 import { sign } from "jsonwebtoken";
 import { JWT_SECRET } from "../const";
 import {
+  IUserAll,
   IUserHandler,
   IUserRepository,
   UpdatedUserDetailWithoutPassword,
   Username,
 } from "../interfaces/user.interface";
 import { User } from "@prisma/client";
+import { AuthStatus } from "../middleware/jwt";
 
 export default class UserHandler implements IUserHandler {
   constructor(private Repo: IUserRepository) {}
@@ -88,5 +91,30 @@ export default class UserHandler implements IUserHandler {
     console.log(newWeight);
 
     return res.status(200).json(newWeight).end();
+  };
+  public checkUser: RequestHandler<
+    {},
+    IUserDetailDto | IErrorDto,
+    unknown,
+    unknown,
+    AuthStatus
+  > = async (req, res) => {
+    try {
+      const idUser = await this.Repo.findById(res.locals.user.id);
+      return res.status(200).json(idUser).end();
+    } catch (error) {
+      return res.status(501).json({ message: `Unauthorized user` }).end();
+    }
+  };
+  public getAllUser: RequestHandler<{}, IUserAll[] | IErrorDto> = async (
+    req,
+    res
+  ) => {
+    try {
+      const userAll = await this.Repo.getAll();
+      return res.status(200).json(userAll).end();
+    } catch (error) {
+      return res.status(404).json({ message: `content not found` }).end();
+    }
   };
 }

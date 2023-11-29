@@ -29,6 +29,12 @@ class UserRepository {
             return createdUser;
         });
     }
+    getAll() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const allUser = yield this.prisma.user.findMany({});
+            return allUser;
+        });
+    }
     findByUsername(username) {
         return __awaiter(this, void 0, void 0, function* () {
             const findUsernameSuccess = yield this.prisma.user.findUniqueOrThrow({
@@ -60,6 +66,20 @@ class UserRepository {
                 },
                 where: {
                     username,
+                },
+            });
+        });
+    }
+    findById(userId) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield this.prisma.user.findUniqueOrThrow({
+                where: {
+                    id: userId,
+                },
+                select: {
+                    id: true,
+                    username: true,
+                    name: true,
                 },
             });
         });

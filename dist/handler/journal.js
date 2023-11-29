@@ -30,10 +30,7 @@ class JournalHandler {
             try {
                 // const ownerId = res.locals.user.id;
                 const journalUser = yield this.Repo.getJournal();
-                return res
-                    .status(200)
-                    .json(Object.assign({}, journalUser))
-                    .end();
+                return res.status(200).json(journalUser).end();
             }
             catch (error) {
                 return res.status(500).json({ message: `Unauthorized access` }).end();

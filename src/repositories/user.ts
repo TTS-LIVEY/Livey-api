@@ -7,8 +7,10 @@ import {
   IUserDto,
 } from "../dto/user.dto";
 import {
+  IUserAll,
   IUserRepository,
   UpdatedUserDetailWithoutPassword,
+  UserDetail,
 } from "../interfaces/user.interface";
 
 const SELECT = {
@@ -27,6 +29,10 @@ export default class UserRepository implements IUserRepository {
       select: SELECT,
     });
     return createdUser;
+  }
+  public async getAll(): Promise<IUserAll[]> {
+    const allUser = await this.prisma.user.findMany({});
+    return allUser;
   }
   public async findByUsername(username: string): Promise<User> {
     const findUsernameSuccess = await this.prisma.user.findUniqueOrThrow({
@@ -59,6 +65,18 @@ export default class UserRepository implements IUserRepository {
       },
       where: {
         username,
+      },
+    });
+  }
+  public async findById(userId: string): Promise<UserDetail> {
+    return await this.prisma.user.findUniqueOrThrow({
+      where: {
+        id: userId,
+      },
+      select: {
+        id: true,
+        username: true,
+        name: true,
       },
     });
   }
