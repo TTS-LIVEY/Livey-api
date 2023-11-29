@@ -41,7 +41,7 @@ COPY --from=builder --chown=node /app/package.json /app/pnpm-lock.yaml ./
 
 COPY --from=builder --chown=node /app/prisma/ ./prisma
 
-RUN pnpm install --prod --frozen-lockfile
+RUN chmod +x prisma/seed.sh && pnpm install --prod --frozen-lockfile
 
 COPY --from=builder --chown=node /app/dist/ ./dist
 
