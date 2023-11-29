@@ -1,11 +1,11 @@
 version: "3.8"
 services:
   webpage:
-    image: chawakorn16/livey-web:0.0.2
+    image: $DOCKERHUB_USERNAME/$PROJECT_NAME-web:0.0.4
     ports:
       - 80:80
   api:
-    image: chawakorn16/livey-api:0.0.1
+    image: $DOCKERHUB_USERNAME/$PROJECT_NAME-api:0.0.1
     secrets:
       - source: node-env
         target: /app/.env
