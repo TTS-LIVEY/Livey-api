@@ -3,4 +3,4 @@
 # -x Print commands before they are executed
 set -ex
 # Seeding command
-psql program.sql
+psql -f program.sql
