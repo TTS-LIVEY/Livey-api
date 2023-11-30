@@ -20,6 +20,10 @@ import {
 } from "../interfaces/user.interface";
 import { User } from "@prisma/client";
 import { AuthStatus } from "../middleware/jwt";
+import {
+  PrismaClientKnownRequestError,
+  PrismaClientUnknownRequestError,
+} from "@prisma/client/runtime/library";
 
 export default class UserHandler implements IUserHandler {
   constructor(private Repo: IUserRepository) {}
@@ -28,32 +32,57 @@ export default class UserHandler implements IUserHandler {
     IUserDto | IErrorDto,
     ICreateuserDto
   > = async (req, res) => {
-    const {
-      name,
-      username,
-      password: plainPassword,
-      body_height,
-      body_weight,
-    } = req.body;
+    try {
+      const {
+        name,
+        username,
+        password: plainPassword,
+        body_height,
+        body_weight,
+      } = req.body;
+      const {
+        id: registeredId,
+        username: registeredUsername,
+        registered_date,
+      } = await this.Repo.createuser({
+        name,
+        username,
+        password: hashPassword(plainPassword),
+        body_height,
+        body_weight,
+      });
+      return res.status(201).json({
+        id: registeredId,
+        username: registeredUsername,
+        registered_date,
+        body_height,
+        body_weight,
+      });
+    } catch (error) {
+      const userNameIdeal = await this.Repo.findByUsername(req.body.username);
 
-    const {
-      id: registeredId,
-      username: registeredUsername,
-      registered_date,
-    } = await this.Repo.createuser({
-      name,
-      username,
-      password: hashPassword(plainPassword),
-      body_height,
-      body_weight,
-    });
-    return res.status(201).json({
-      id: registeredId,
-      username: registeredUsername,
-      registered_date,
-      body_height,
-      body_weight,
-    });
+      if (userNameIdeal.username === req.body.username) {
+        return res.status(500).json({ message: `username duplicated` }).end();
+      }
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === "P2025" &&
+        PrismaClientUnknownRequestError
+      ) {
+        return res
+          .status(500)
+          .json({
+            message: `name is invalid`,
+          })
+          .end();
+      }
+      return res
+        .status(500)
+        .json({
+          message: `Internal Server Error`,
+        })
+        .end();
+    }
   };
   public login: RequestHandler<{}, ICredentialDto | IErrorDto, ILoginDto> =
     async (req, res) => {

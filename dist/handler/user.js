@@ -12,25 +12,50 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const bcrypts_1 = require("../utils/bcrypts");
 const jsonwebtoken_1 = require("jsonwebtoken");
 const const_1 = require("../const");
+const library_1 = require("@prisma/client/runtime/library");
 class UserHandler {
     constructor(Repo) {
         this.Repo = Repo;
         this.registration = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            const { name, username, password: plainPassword, body_height, body_weight, } = req.body;
-            const { id: registeredId, username: registeredUsername, registered_date, } = yield this.Repo.createuser({
-                name,
-                username,
-                password: (0, bcrypts_1.hashPassword)(plainPassword),
-                body_height,
-                body_weight,
-            });
-            return res.status(201).json({
-                id: registeredId,
-                username: registeredUsername,
-                registered_date,
-                body_height,
-                body_weight,
-            });
+            try {
+                const { name, username, password: plainPassword, body_height, body_weight, } = req.body;
+                const { id: registeredId, username: registeredUsername, registered_date, } = yield this.Repo.createuser({
+                    name,
+                    username,
+                    password: (0, bcrypts_1.hashPassword)(plainPassword),
+                    body_height,
+                    body_weight,
+                });
+                return res.status(201).json({
+                    id: registeredId,
+                    username: registeredUsername,
+                    registered_date,
+                    body_height,
+                    body_weight,
+                });
+            }
+            catch (error) {
+                const userNameIdeal = yield this.Repo.findByUsername(req.body.username);
+                if (userNameIdeal.username === req.body.username) {
+                    return res.status(500).json({ message: `username duplicated` }).end();
+                }
+                if (error instanceof library_1.PrismaClientKnownRequestError &&
+                    error.code === "P2025" &&
+                    library_1.PrismaClientUnknownRequestError) {
+                    return res
+                        .status(500)
+                        .json({
+                        message: `name is invalid`,
+                    })
+                        .end();
+                }
+                return res
+                    .status(500)
+                    .json({
+                    message: `Internal Server Error`,
+                })
+                    .end();
+            }
         });
         this.login = (req, res) => __awaiter(this, void 0, void 0, function* () {
             const { username, password: plainPassword } = req.body;
